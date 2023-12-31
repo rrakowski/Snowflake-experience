@@ -1,0 +1,27 @@
+# Creating Snowflake resources
+
+--> Creating user
+USE ROLE SECURITYADMIN;
+CREATE USER IF NOT EXISTS RafalRakowski password='superSecretPass' default_role = PUBLIC must_change_password = true;
+
+--> Creating role
+CREATE ROLE IF NOT EXISTS DATA_CONSUMER COMMENT = 'Role to access raw data';
+SHOW USERS;
+SHOW ROLES;
+
+--> Assigning roles to user
+GRANT ROLE DATA_CONSUMER TO USER RafalRakowski;
+GRANT ROLE DATA_CONSUMER TO ROLE SYSADMIN;
+GRANT USAGE ON WAREHOUSE COMPUTE_WH TO ROLE SYSADMIN;
+
+--> Create database and grant permission
+USE ROLE SYSADMIN;
+CREATE DATABASE RAW_DATA;
+GRANT USAGE ON DATABASE RAW_DATA TO DATA_CONSUMER;
+
+--> Create schema
+USE DATABASE RAW_DATA;
+CREATE SCHEMA SALES;
+
+--> Create table
+CREATE TABLE RAW_DATA.SALES.TRANSACTIONS (PAYLOAD VARIANT);
